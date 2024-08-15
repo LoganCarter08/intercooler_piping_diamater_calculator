@@ -117,13 +117,28 @@ function App() {
 				<div className="pageColumn">
 					<form onSubmit={(e) => calculateVelocityTable(e)} className="form">
 						<span>Engine Displacement (liters): </span>
-						<input type={"number"} name={"engineDisplacement"} step={0.01} />
+						<input
+							type={"number"}
+							name={"engineDisplacement"}
+							step={0.01}
+							required={true}
+						/>
 
 						<span>Target Boost (psi): </span>
-						<input type={"number"} name={"targetBoost"} step={0.01} />
+						<input
+							type={"number"}
+							name={"targetBoost"}
+							step={0.01}
+							required={true}
+						/>
 
 						<span>Max RPM: </span>
-						<input type={"number"} name={"revLimit"} step={0.01} />
+						<input
+							type={"number"}
+							name={"revLimit"}
+							step={0.01}
+							required={true}
+						/>
 
 						<span>Volumetric Efficiency: </span>
 						<input
@@ -131,6 +146,7 @@ function App() {
 							name={"volumetricEfficiency"}
 							defaultValue={0.85}
 							step={0.01}
+							required={true}
 						/>
 
 						<span>Wall Thickness (inch): </span>
@@ -139,6 +155,7 @@ function App() {
 							name={"wallThickness"}
 							defaultValue={0.065}
 							step={0.001}
+							required={true}
 						/>
 
 						<button type={"submit"}>Calculate</button>
