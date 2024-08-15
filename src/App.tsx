@@ -8,6 +8,7 @@ interface FormElements extends HTMLFormControlsCollection {
 	targetBoost: HTMLInputElement;
 	revLimit: HTMLInputElement;
 	volumetricEfficiency: HTMLInputElement;
+	wallThickness: HTMLInputElement;
 }
 
 function App() {
@@ -73,11 +74,12 @@ function App() {
 		const volumetricEfficiency = parseFloat(
 			elements.volumetricEfficiency.value
 		);
+		const wallThickness = parseFloat(elements.wallThickness.value);
 
 		let rows = [];
 		for (let dia = 1.5; dia <= 4.0; dia += 0.25) {
 			let velocity = getVelocity(
-				dia,
+				dia - wallThickness * 2,
 				displacement,
 				revLimit,
 				volumetricEfficiency,
@@ -113,10 +115,7 @@ function App() {
 			<h1>Calculate ideal intercooler piping diameter</h1>
 			<div className="pageContainer">
 				<div className="pageColumn">
-					<form
-						onSubmit={(e) => calculateVelocityTable(e)}
-						className="pageContainer"
-					>
+					<form onSubmit={(e) => calculateVelocityTable(e)} className="form">
 						<span>Engine Displacement (liters): </span>
 						<input type={"number"} name={"engineDisplacement"} step={0.01} />
 
@@ -132,6 +131,14 @@ function App() {
 							name={"volumetricEfficiency"}
 							defaultValue={0.85}
 							step={0.01}
+						/>
+
+						<span>Wall Thickness (inch): </span>
+						<input
+							type={"number"}
+							name={"wallThickness"}
+							defaultValue={0.065}
+							step={0.001}
 						/>
 
 						<button type={"submit"}>Calculate</button>
