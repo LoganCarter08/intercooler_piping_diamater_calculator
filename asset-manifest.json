@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/intercooler_piping_calculator/static/css/main.f2f420d4.css",
-    "main.js": "/intercooler_piping_calculator/static/js/main.590a2bd7.js",
-    "static/js/453.d46c3377.chunk.js": "/intercooler_piping_calculator/static/js/453.d46c3377.chunk.js",
-    "index.html": "/intercooler_piping_calculator/index.html",
-    "main.f2f420d4.css.map": "/intercooler_piping_calculator/static/css/main.f2f420d4.css.map",
-    "main.590a2bd7.js.map": "/intercooler_piping_calculator/static/js/main.590a2bd7.js.map",
-    "453.d46c3377.chunk.js.map": "/intercooler_piping_calculator/static/js/453.d46c3377.chunk.js.map"
+    "main.css": "/intercooler_piping_diameter_calculator/static/css/main.f2f420d4.css",
+    "main.js": "/intercooler_piping_diameter_calculator/static/js/main.aad85ce1.js",
+    "static/js/453.d46c3377.chunk.js": "/intercooler_piping_diameter_calculator/static/js/453.d46c3377.chunk.js",
+    "index.html": "/intercooler_piping_diameter_calculator/index.html",
+    "main.f2f420d4.css.map": "/intercooler_piping_diameter_calculator/static/css/main.f2f420d4.css.map",
+    "main.aad85ce1.js.map": "/intercooler_piping_diameter_calculator/static/js/main.aad85ce1.js.map",
+    "453.d46c3377.chunk.js.map": "/intercooler_piping_diameter_calculator/static/js/453.d46c3377.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f2f420d4.css",
-    "static/js/main.590a2bd7.js"
+    "static/js/main.aad85ce1.js"
   ]
 }
