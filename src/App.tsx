@@ -4,86 +4,73 @@ import "./App.css";
 import { useState, useEffect } from "react";
 
 interface FormElements extends HTMLFormControlsCollection {
-	engineDisplacement: HTMLInputElement;
-	targetBoost: HTMLInputElement;
-	revLimit: HTMLInputElement;
-	volumetricEfficiency: HTMLInputElement;
+	targetHorsepower: HTMLInputElement;
+	fuelType: HTMLInputElement;
 	wallThickness: HTMLInputElement;
 }
 
 function App() {
 	const [results, setResults] = useState(<></>);
 
-	function convertLitersToCI(engineSize: number) {
-		return engineSize * 61.0237;
-	}
+	const fuelTypeEstimateValues = {
+		pump: {
+			bsfc: 0.46,
+			afr: 11.5,
+		},
+		diesel: {
+			bsfc: 0.36,
+			afr: 18,
+		},
+		e85: {
+			bsfc: 0.6,
+			afr: 8.5,
+		},
+		methanol: {
+			bsfc: 1.05,
+			afr: 5,
+		},
+		race: {
+			bsfc: 0.42,
+			afr: 12.5,
+		},
+	};
 
-	function calculateEngineCFM(
-		engineSize: number,
-		revLimit: number,
-		volumetricEfficiency: number
-	) {
-		return (
-			(convertLitersToCI(engineSize) * revLimit * 0.5 * volumetricEfficiency) /
-			1728
-		);
-	}
-
-	function calculateTurboModifier(boostTarget: number) {
-		const atmos = 14.7;
-		return (atmos + boostTarget) / atmos;
-	}
-
-	function getCFM(
-		engineSize: number,
-		revLimit: number,
-		volumetricEfficiency: number,
-		targetBoost: number
-	) {
-		return (
-			calculateEngineCFM(engineSize, revLimit, volumetricEfficiency) *
-			calculateTurboModifier(targetBoost)
-		);
+	function getCFM(horsepower: number, afr: number, bsfc: number) {
+		let airFlow = (horsepower * afr * bsfc) / 60;
+		// 545 is 85f outside + 460 to get absolute temp and 13.949 is apparently the pressure standard
+		// I'll link source shortly
+		let cfm = (airFlow * 10.73 * 545) / (29 * 13.949);
+		return cfm;
 	}
 
 	function getPipeCrossSectionalArea(dia: number) {
 		return Math.PI * Math.pow(dia / 2 / 12, 2);
 	}
 
-	function getVelocity(
-		dia: number,
-		engineSize: number,
-		revLimit: number,
-		volumetricEfficiency: number,
-		targetBoost: number
-	) {
-		return (
-			getCFM(engineSize, revLimit, volumetricEfficiency, targetBoost) /
-			getPipeCrossSectionalArea(dia) /
-			60
-		);
+	function getVelocity(cfm: number, dia: number) {
+		return cfm / getPipeCrossSectionalArea(dia) / 60;
 	}
 
 	function calculateVelocityTable(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		const elements: FormElements = (event.target as HTMLFormElement)
 			.elements as FormElements;
-		const displacement = parseFloat(elements.engineDisplacement.value);
-		const targetBoost = parseFloat(elements.targetBoost.value);
-		const revLimit = parseFloat(elements.revLimit.value);
-		const volumetricEfficiency = parseFloat(
-			elements.volumetricEfficiency.value
+		const fuelData =
+			fuelTypeEstimateValues[
+				elements.fuelType.value as keyof typeof fuelTypeEstimateValues
+			];
+
+		let cfm = getCFM(
+			parseFloat(elements.targetHorsepower.value),
+			fuelData.afr,
+			fuelData.bsfc
 		);
-		const wallThickness = parseFloat(elements.wallThickness.value);
 
 		let rows = [];
 		for (let dia = 1.5; dia <= 4.0; dia += 0.25) {
 			let velocity = getVelocity(
-				dia - wallThickness * 2,
-				displacement,
-				revLimit,
-				volumetricEfficiency,
-				targetBoost
+				cfm,
+				dia - parseFloat(elements.wallThickness.value) * 2
 			);
 			rows.push(
 				<tr
@@ -116,38 +103,22 @@ function App() {
 			<div className="pageContainer">
 				<div className="pageColumn">
 					<form onSubmit={(e) => calculateVelocityTable(e)} className="form">
-						<span>Engine Displacement (liters): </span>
+						<span>Target Horsepower: </span>
 						<input
 							type={"number"}
-							name={"engineDisplacement"}
+							name={"targetHorsepower"}
 							step={0.01}
 							required={true}
 						/>
 
-						<span>Target Boost (psi): </span>
-						<input
-							type={"number"}
-							name={"targetBoost"}
-							step={0.01}
-							required={true}
-						/>
-
-						<span>Max RPM: </span>
-						<input
-							type={"number"}
-							name={"revLimit"}
-							step={0.01}
-							required={true}
-						/>
-
-						<span>Volumetric Efficiency: </span>
-						<input
-							type={"number"}
-							name={"volumetricEfficiency"}
-							defaultValue={0.85}
-							step={0.01}
-							required={true}
-						/>
+						<span>Fuel Type: </span>
+						<select name={"fuelType"} required={true}>
+							<option value="pump">Pump Gas</option>
+							<option value="diesel">Diesel</option>
+							<option value="e85">E85</option>
+							<option value="meth">Methanol</option>
+							<option value="race">Race Gas</option>
+						</select>
 
 						<span>Wall Thickness (inch): </span>
 						<input
