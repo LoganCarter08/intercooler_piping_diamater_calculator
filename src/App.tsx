@@ -36,9 +36,11 @@ function App() {
 	};
 
 	function getCFM(horsepower: number, afr: number, bsfc: number) {
+		// airflow calc from here: https://www.garrettmotion.com/news/newsroom/article/how-to-select-a-turbo-part-2-understanding-calculations-to-turbo-any-engine/
 		let airFlow = (horsepower * afr * bsfc) / 60;
 		// 545 is 85f outside + 460 to get absolute temp and 13.949 is apparently the pressure standard
-		// I'll link source shortly
+		// suggested constants from here: https://www.dsmtuners.com/threads/converting-between-cfm-and-lbs-min.20184/
+		// equation from here: https://www.gnttype.org/techarea/turbo/turboflow.html
 		let cfm = (airFlow * 10.73 * 545) / (29 * 13.949);
 		return cfm;
 	}
@@ -73,6 +75,7 @@ function App() {
 				dia - parseFloat(elements.wallThickness.value) * 2
 			);
 			rows.push(
+				// acceptable velocities pulled from here: https://www.garrettmotion.com/knowledge-center-category/racing-and-performance/how-to-size-charge-air-tubing/
 				<tr
 					className={velocity >= 200 && velocity <= 300 ? "goodVelocity" : ""}
 				>
